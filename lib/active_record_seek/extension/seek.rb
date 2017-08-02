@@ -5,10 +5,12 @@ module ActiveRecordSeek::Extension
     seeks = {}.with_indifferent_access
     seek_params = seek_params.with_indifferent_access
     # global options
-    global_options = global_options.with_indifferent_access.assert_valid_keys(*%w[ namespace defaults remove_blank rescue_callback ])
+    global_options = global_options.with_indifferent_access.assert_valid_keys(*%w[
+      namespace defaults remove_blank rescue_callback
+    ])
     global_namespace = global_options[:namespace].to_s.presence
     seek_defaults = (global_options[:defaults] || {}).with_indifferent_access
-    global_options[:remove_blank] = false if !global_options[:remove_blank].in?([true, false])
+    global_options[:remove_blank] = global_options[:remove_blank] == true
     # modify seek hashes
     [seek_params, seek_defaults].each do |seek_hash|
       # standardize keys
@@ -38,19 +40,16 @@ module ActiveRecordSeek::Extension
         association = namespace.dup
         debug_details = "#{global_namespace || :seek}: #{original_namespace} => #{original_value}".inspect
         # parse options [isolate, without]
-        option_regex = /\Awithout_/
-        option_without = association =~ option_regex ? true : false
-        association.remove!(option_regex)
-        option_regex = /\Aunscoped_/
-        option_isolate = association =~ option_regex ? true : false
-        association.remove!(option_regex)
+        option_without_regex = /\Awithout_/
+        option_without = association =~ option_without_regex ? true : false
+        association.remove!(option_without_regex)
+        option_unscoped_regex = /\Aunscoped_/
+        option_isolate = association =~ option_unscoped_regex ? true : false
+        association.remove!(option_unscoped_regex)
         # parse column and operator
         matched_operator = ActiveRecordSeek::Operator.find_by_match(column_and_operator)
-        operator, column = matched_operator.operator, matched_operator.parse(column_and_operator) if matched_operator
+        operator, column = matched_operator.operator, matched_operator.parse_column(column_and_operator) if matched_operator
         # parse value
-        requires_type_casting = original_value.is_a?(ActiveRecord::Base)
-        requires_type_casting ||= original_value.is_a?(Array) && original_value.find { |v| v.is_a?(ActiveRecord::Base) }
-        raise ArgumentError, "seek values must be type casted" if requires_type_casting
         value = matched_operator.normalize_value(original_value, remove_blank: global_options[:remove_blank])
         next if value.nil? && global_options[:remove_blank]
         # build seek scope
@@ -74,15 +73,8 @@ module ActiveRecordSeek::Extension
           end
         seek_query = seek_namespace[:isolate] ? seek_model.unscoped : (seek_namespace[:queries].first || seek_model.unscoped)
         original_namespace_slug = original_namespace.scan(/[A-Za-z0-9]+/).join("_").underscore
-        # order by columns on model only otherwise ignore
-        if operator.in?(%w[ order reorder ])
-          if seek_query.table_name == query.table_name && seek_query.respond_to?("#{operator}_#{column}")
-            next store_seek.call(seek_query.send("#{operator}_#{column}", value))
-          else
-            Rails.env.production? ? next : raise(ArgumentError, "invalid sort: #{debug_details}")
-          end
         # custom seek scope on query
-        elsif query.respond_to?("seek_#{original_namespace_slug}")
+        if query.respond_to?("seek_#{original_namespace_slug}")
           next store_seek.call(query.send("seek_#{original_namespace_slug}", value))
         # custom namespace scope
         elsif global_namespace && seek_query.respond_to?("#{global_namespace}_#{column_and_operator}")

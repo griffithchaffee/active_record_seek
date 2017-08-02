@@ -12,7 +12,7 @@ module ActiveRecordSeek
       column_and_operator =~ matcher || column_and_operator.to_sym == operator ? true : false
     end
 
-    def parse(column_and_operator)
+    def parse_column(column_and_operator)
       column_and_operator.to_sym == operator ? nil : column_and_operator.remove(matcher)
     end
 

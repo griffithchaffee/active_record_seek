@@ -16,6 +16,30 @@ module ActiveRecordSeek::Extension
 
   def build_seek_universal_scopes
     scope :order_random, -> { order("RANDOM()") }
+    scope :order_by, -> (columns_and_ordering) do
+      query = all
+      next query if columns_and_ordering.blank?
+      # ordering using Arel Node utalizes node.reverse for handling reverse_order!
+      columns_and_ordering.each do |column, ordering|
+        next if !column.to_s.in?(column_names)
+        # order by nulls first (IS NOT NULL) or last (IS NULL)
+        if ordering =~ /first/i
+          query = query.order(arel_table[column].not_eq(nil))
+        elsif ordering =~ /last/i
+          query = query.order(arel_table[column].eq(nil))
+        end
+        # order by column
+        if ordering =~ /desc/i
+          query = query.order(arel_table[column].desc)
+        elsif ordering =~ /asc/i
+          query = query.order(arel_table[column].asc)
+        end
+      end
+      query
+    end
+    scope :reorder_by, -> (columns_and_ordering) do
+      except(:order).order_by(columns_and_ordering)
+    end
   end
 
   def build_seek_select_scope_for_column(column_name)

@@ -1,6 +1,6 @@
 module ActiveRecordSeek::Extension
   def to_where_sql
-    reorder(nil).to_sql[/ WHERE (.*)/i, 1].presence
+    except(:order).to_sql[/ WHERE (.*)/i, 1].presence
   end
 
   def where_merge(other_query)
