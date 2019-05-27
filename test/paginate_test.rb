@@ -5,7 +5,7 @@ class ActiveRecordSeek::PaginateTest < ActiveRecordSeek::ModelTest
   def test_paginate
     # setup
     assert_equal(0, Group.count)
-    FactoryGirl.create_list(:group, 5)
+    FactoryBot.create_list(:group, 5)
     assert_equal(5, Group.count)
     # each_page
     assert_equal([1,2,3], Group.all.paginate(limit: 2).each_page.to_a)
@@ -129,12 +129,12 @@ class ActiveRecordSeek::PaginateTest < ActiveRecordSeek::ModelTest
   end
 
   def test_each_page
-    FactoryGirl.create_list(:group, 5)
+    FactoryBot.create_list(:group, 5)
     assert_equal([1,2,3], Group.all.paginate(limit: 2).each_page.to_a)
   end
 
   def test_find_each_in_order
-    FactoryGirl.create_list(:group, 5)
+    FactoryBot.create_list(:group, 5)
     # default order by id desc
     batch_ids = -> (query) do
       ids = []

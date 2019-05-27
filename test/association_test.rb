@@ -4,9 +4,9 @@ require "support/database_models"
 class ActiveRecordSeek::AssociationTest < ActiveRecordSeek::ModelTest
 
   def test_seek_on_association
-    member1 = FactoryGirl.create(:member)
-    group1 = FactoryGirl.create(:group, name: "group1")
-    group2 = FactoryGirl.create(:group, name: "group2")
+    member1 = FactoryBot.create(:member)
+    group1 = FactoryBot.create(:group, name: "group1")
+    group2 = FactoryBot.create(:group, name: "group2")
     # assertions
     assert_sql = -> (expected_where_sql, actual, options = {}) do
       options = options.with_indifferent_access.assert_valid_keys(*%w[ without ])
@@ -66,10 +66,10 @@ class ActiveRecordSeek::AssociationTest < ActiveRecordSeek::ModelTest
   end
 
   def test_merge_association_query
-    member1 = FactoryGirl.create(:member)
-    group_category1 = FactoryGirl.create(:group_category)
-    group1 = FactoryGirl.create(:group, name: "group1", category: group_category1)
-    group2 = FactoryGirl.create(:group, name: "group2", category: group_category1)
+    member1 = FactoryBot.create(:member)
+    group_category1 = FactoryBot.create(:group_category)
+    group1 = FactoryBot.create(:group, name: "group1", category: group_category1)
+    group2 = FactoryBot.create(:group, name: "group2", category: group_category1)
     member1.groups = [group1]
     # assertions
     assert_sql = -> (expected_sql, actual) do
@@ -149,9 +149,9 @@ class ActiveRecordSeek::AssociationTest < ActiveRecordSeek::ModelTest
   end
 =begin
   def testing "find_in_ordered_batches" do
-    event1 = FactoryGirl.create(:event, name: "event1", description: nil)
-    event2 = FactoryGirl.create(:event, name: "event2", description: nil)
-    event3 = FactoryGirl.create(:event, name: "event3", description: nil)
+    event1 = FactoryBot.create(:event, name: "event1", description: nil)
+    event2 = FactoryBot.create(:event, name: "event2", description: nil)
+    event3 = FactoryBot.create(:event, name: "event3", description: nil)
     # default ordering is by id
     assert_batches = -> (expected_batches, query, batching_options = {}) do
       actual_batches = []

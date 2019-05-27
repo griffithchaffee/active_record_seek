@@ -32,8 +32,8 @@ class ActiveRecordSeek::OperatorTest < ActiveRecordSeek::ModelTest
   end
 
   def test_normalize_value
-    group = FactoryGirl.create(:group)
-    FactoryGirl.create_list(:group, 4)
+    group = FactoryBot.create(:group)
+    FactoryBot.create_list(:group, 4)
     groups = Group.all
     # assertion helper
     assert_normalized_value = -> (operator:, initial_value:, expected_value:, options: {}) do

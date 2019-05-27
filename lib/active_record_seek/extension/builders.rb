@@ -15,7 +15,7 @@ module ActiveRecordSeek::Extension
   end
 
   def build_seek_universal_scopes
-    scope :order_random, -> { order("RANDOM()") }
+    scope :order_random, -> { order(Arel.sql("RANDOM()")) }
     scope :order_by, -> (columns_and_ordering) do
       query = all
       next query if columns_and_ordering.blank?

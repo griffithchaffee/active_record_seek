@@ -34,31 +34,31 @@ class GroupProperty < ActiveRecord::Base
   build_seek_scopes_for_all_columns
 end
 
-FactoryGirl.define do
+FactoryBot.define do
   sequence(:uniq_i) { |i| i }
   sequence(:uniq_s) { |i| "uniq_#{i}_s" }
 
   factory :member do
-    full_name { FactoryGirl.generate(:uniq_s) }
+    full_name { FactoryBot.generate(:uniq_s) }
   end
 
   factory :member_group do
-    member { FactoryGirl.create(:member) }
-    group { FactoryGirl.create(:group) }
+    member { FactoryBot.create(:member) }
+    group { FactoryBot.create(:group) }
   end
 
   factory :group do
-    name { FactoryGirl.generate(:uniq_s) }
+    name { FactoryBot.generate(:uniq_s) }
     description { nil }
-    category { FactoryGirl.create(:group_category) }
+    category { FactoryBot.create(:group_category) }
   end
 
   factory :group_category do
-    category { FactoryGirl.generate(:uniq_s) }
+    category { FactoryBot.generate(:uniq_s) }
   end
 
   factory :group_property do
-    group { FactoryGirl.create(:group) }
+    group { FactoryBot.create(:group) }
   end
 end
 

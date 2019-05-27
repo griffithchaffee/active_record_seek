@@ -4,8 +4,8 @@ require "support/database_models"
 class ActiveRecordSeek::SeekTest < ActiveRecordSeek::ModelTest
 
   def test_seek_on_attributes
-    group1 = FactoryGirl.create(:group, name: "group1", description: "desc1")
-    group2 = FactoryGirl.create(:group, name: "group2", description: "desc2")
+    group1 = FactoryBot.create(:group, name: "group1", description: "desc1")
+    group2 = FactoryBot.create(:group, name: "group2", description: "desc2")
     # assertions
     assert_sql = -> (expected_where_sql, actual, options = {}) do
       options = options.with_indifferent_access.assert_valid_keys(*%w[ wrap ])
