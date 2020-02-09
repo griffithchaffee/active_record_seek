@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_record_seek (0.1.0)
+    active_record_seek (1.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -19,7 +19,7 @@ GEM
       tzinfo (~> 1.1)
     arel (9.0.0)
     concurrent-ruby (1.1.5)
-    factory_bot (5.0.2)
+    factory_bot (5.1.1)
       activesupport (>= 4.2.0)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
@@ -42,4 +42,4 @@ DEPENDENCIES
   sqlite3 (~> 1)
 
 BUNDLED WITH
-   2.0.1
+   2.0.2
