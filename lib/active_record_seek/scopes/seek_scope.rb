@@ -2,34 +2,33 @@ module ActiveRecordSeek
   module Scopes
     class SeekScope < BaseScope
 
-      attr_reader(*%w[ predicates_hash ])
+      attr_reader(*%w[ components ])
 
-      def predicates
-        instance_variable_yield(:@predicates) { |value| return value }
-        @predicates = predicates_hash.map do |predicate_key, predicate_value|
-          Predicate.build(key: predicate_key, value: predicate_value)
-        end
+      def components_hash=(new_components_hash)
+        @components = Collections::ComponentCollection.new(components_hash: new_components_hash)
       end
 
-      def predicates_hash=(new_predicates_hash)
-        instance_variable_reset(:@predicates)
-        @predicates_hash = new_predicates_hash
-      end
-
-      def apply(predicates_hash = {}, &block)
-        raise(ArgumentError, "#{self.class}.apply does not accept a block") if block
-        set(predicates_hash: predicates_hash)
+      def apply(query)
         query.seek_or(self) do |this|
-          # build array of namespace queries to combined into one OR query
-          this.predicates.group_by(&:namespace).each do |namespace, namespace_predicates|
-            add_clause do |clause|
-              namespace_predicates.each do |namespace_predicate|
-                clause = namespace_predicate.apply(clause)
-              end
-              clause
+          this.components.namespaces.each do |namespace|
+            add_query do |unscoped|
+              namespace.apply(unscoped)
             end
           end
         end
+      end
+
+      module ActiveRecordScopeConcern
+
+        extend ActiveSupport::Concern
+
+        class_methods do
+          def seek(components_hash = {}, &block)
+            raise(ArgumentError, "#{self.class}#seek does not accept a block") if block
+            SeekScope.new(components_hash: components_hash).apply(all)
+          end
+        end
+
       end
 
     end

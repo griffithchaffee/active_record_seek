@@ -4,6 +4,26 @@ module ActiveRecordSeek
 
       extend ActiveSupport::Concern
 
+      def initialize(variables = {})
+        #puts "#{self.class}.new"
+        before_initialize
+        set(variables)
+        after_initialize
+      end
+
+      def before_initialize
+        self
+      end
+
+      def after_initialize
+        self
+      end
+
+      def set(params = {})
+        params.each { |key, value| send("#{key}=", value) }
+        self
+      end
+
       def instance_variable_reset(variable, &block)
         if instance_variable_defined?(variable)
           remove_instance_variable(variable)

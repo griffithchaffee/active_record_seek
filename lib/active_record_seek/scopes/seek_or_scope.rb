@@ -1,36 +1,50 @@
 =begin
 Student.seek_or(self) do |this|
-  add_clause { where(...) }
-  add_clause { where(...).where(...) }
+  add_scope { where(...) }
+  add_scope { where(...).where(...) }
 end
 =end
 module ActiveRecordSeek
   module Scopes
     class SeekOrScope < BaseScope
 
-      def apply(*params, &block)
-        context = Context.new(model)
-        context.instance_exec(*params, &block)
-        # combine clauses into single OR clause
-        query.where(context.clauses.map(&:to_where_sql).join(" OR "))
+      attr_accessor(*%w[ context_block ])
+
+      def apply(query, *context_arguments, &context_block)
+        context = Context.new(query.klass)
+        context.instance_exec(*context_arguments, &context_block)
+        # combine queries into single OR clause
+        query.where(context.queries.map(&:to_where_sql).join(" OR "))
       end
 
       class Context
-        attr_accessor(*%w[ model clauses ])
+        attr_accessor(*%w[ klass queries ])
 
-        def initialize(model)
-          self.model   = model
-          self.clauses = []
+        def initialize(klass)
+          self.klass   = klass
+          self.queries = []
         end
 
-        def add_clause(&block)
-          new_clause = model.unscoped.all
-          raw_clause = new_clause.instance_exec(new_clause, &block)
-          clause     = Clause.build(clause: raw_clause)
-          clauses.push(clause) if clause.has_where_sql?
+        def add_query(&block)
+          unscoped_query = klass.unscoped
+          query = unscoped_query.instance_exec(unscoped_query, &block).to_seek_query
+          queries.push(query) if query.has_where_sql?
           self
         end
       end
+
+      module ActiveRecordScopeConcern
+
+        extend ActiveSupport::Concern
+
+        class_methods do
+          def seek_or(*params, &block)
+            SeekOrScope.new.apply(all, *params, &block)
+          end
+        end
+
+      end
+
 
     end
   end

@@ -1,38 +1,29 @@
 module ActiveRecordSeek
   class Predicate
 
-    include Concerns::BuildConcern
     include Concerns::InstanceVariableConcern
 
-    attr_accessor(*%w[ value clause ])
-    attr_reader(*%w[ key namespace association column operator ])
-
-    def key=(new_key)
-      @key = new_key.to_s
-      parts = @key.split(".")
-      @operator    = parts.pop
-      @column      = parts.pop
-      @association = parts.pop || "self"
-      @namespace   = parts.pop || "default"
-      @key
-    end
+    attr_accessor(*%w[ component query ])
+    attr_writer(*%w[ arel_table arel_column arel_value ])
 
     def arel_table
-      clause.arel_table
+      instance_variable_yield(:@arel_table) { |value| return value }
+      query.arel_table
     end
 
     def arel_column
-      arel_table[column]
+      instance_variable_yield(:@arel_column) { |value| return value }
+      arel_table[component.column]
     end
 
-    def operator_class
-      "::ActiveRecordSeek::Operators::#{operator.camelcase}Operator".constantize
+    def arel_value
+      instance_variable_yield(:@arel_value) { |value| return value }
+      component.value
     end
 
-    def apply(clause)
-      set(clause: clause)
-      seek_operator = operator_class.build(predicate: self)
-      seek_operator.apply
+    def apply(query)
+      set(query: query)
+      component.operator_class.new(predicate: self).apply
     end
 
   end

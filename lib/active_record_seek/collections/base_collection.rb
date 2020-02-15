@@ -1,7 +1,6 @@
-# WHERE (clause) has many conditions (predicates)
 module ActiveRecordSeek
-  module Scopes
-    class BaseScope
+  module Collections
+    class BaseCollection
 
       include Concerns::InstanceVariableConcern
 
