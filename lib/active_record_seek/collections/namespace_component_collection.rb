@@ -4,19 +4,17 @@ module ActiveRecordSeek
 
       attr_accessor(*%w[ namespace components ])
 
-      def association_query(query)
-        case namespace
-        when "self" then query
-        else query
+      def associations
+        @associations ||= components.group_by(&:association).map do |association, association_components|
+          AssociationComponentCollection.new(association: association, components: association_components)
         end
       end
 
       def apply(query)
-        namespace_query = association_query(query)
-        components.each do |component|
-          namespace_query = component.apply(namespace_query)
+        associations.each do |association|
+          query = association.apply(query)
         end
-        namespace_query
+        query
       end
 
     end

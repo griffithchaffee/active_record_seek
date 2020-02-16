@@ -3,7 +3,7 @@ module ActiveRecordSeek
 
     include Concerns::InstanceVariableConcern
 
-    attr_accessor(*%w[ value clause ])
+    attr_accessor(*%w[ value ])
     attr_reader(*%w[ key namespace association column operator ])
 
     def key=(new_key)

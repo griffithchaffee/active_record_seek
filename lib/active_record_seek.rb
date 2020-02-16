@@ -12,6 +12,7 @@ require "active_record_seek/predicate"
 require "active_record_seek/collections/base_collection"
 require "active_record_seek/collections/component_collection"
 require "active_record_seek/collections/namespace_component_collection"
+require "active_record_seek/collections/association_component_collection"
 # operators
 require "active_record_seek/operators/base_operator"
 require "active_record_seek/operators/eq_operator"

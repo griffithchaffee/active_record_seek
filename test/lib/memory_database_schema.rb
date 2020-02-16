@@ -1,18 +1,18 @@
-initialize_database do
+MemoryDatabase.instance.define_schema! do
   create_table :members do |t|
-    t.string :full_name
+    t.string :name
   end
 
   create_table :member_groups do |t|
-    t.integer :member_id
-    t.integer :group_id
+    t.belongs_to :member
+    t.belongs_to :group
   end
 
   create_table :groups do |t|
+    t.belongs_to :category
+
     t.string :name, null: false
     t.text :description
-    t.integer :max_members
-    t.integer :category_id
   end
 
   create_table :group_categories do |t|
@@ -20,7 +20,8 @@ initialize_database do
   end
 
   create_table :group_properties do |t|
-    t.integer :group_id
+    t.belongs_to :group
+
     t.string :value
   end
 end
