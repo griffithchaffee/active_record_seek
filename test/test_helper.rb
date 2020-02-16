@@ -25,3 +25,6 @@ puts Group.seek(
   "unscoped.members.id.eq" => 5,
   "unscoped.members.name.eq" => "6",
 ).where(id: 1).to_sql
+
+byebug
+a = 1

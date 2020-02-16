@@ -18,12 +18,11 @@ module ActiveRecordSeek
       end
 
       class Context
-        attr_accessor(*%w[ klass queries enclose_with_parentheses ])
+        attr_accessor(*%w[ klass queries ])
 
         def initialize(klass)
           self.klass   = klass
           self.queries = []
-          self.enclose_with_parentheses = false
         end
 
         def add_query(&block)
@@ -35,7 +34,7 @@ module ActiveRecordSeek
 
         def to_where_sql
           queries.map do |query|
-            query.to_where_sql(enclose_with_parentheses: enclose_with_parentheses)
+            query.to_where_sql
           end.join(" OR ")
         end
       end
