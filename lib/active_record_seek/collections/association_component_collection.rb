@@ -2,10 +2,11 @@ module ActiveRecordSeek
   module Collections
     class AssociationComponentCollection < BaseCollection
 
-      attr_accessor(*%w[ association components query association_query ])
+      attr_accessor(*%w[ namespace association components query association_query ])
 
       def debug(message)
-        puts(message)
+        $debug ||= false
+        puts(message) if $debug
       end
 =begin
 Member => Group
@@ -57,8 +58,6 @@ Group.where(id => MemberGroup.select(:group_id))
           # used to protect against infinite loop
           association = ref.source_reflection.name
           through_ref = ref.through_reflection
-          #byebug
-          a = 1
           if through_ref
             throughception = through_ref.klass.reflect_on_association(association)
             # check for throughception (jump through another association)
@@ -86,21 +85,30 @@ Group.where(id => MemberGroup.select(:group_id))
       end
 
       def apply_components(components_query)
-        components.each do |component|
-          components_query = component.apply(components_query)
+        case namespace
+        when "unscoped"
+          components_query = components_query.seek_or(self) do |this|
+            this.components.each do |component|
+              add_query { component.apply(self) }
+            end
+          end
+        else
+          components.each do |component|
+            components_query = component.apply(components_query)
+          end
         end
         components_query
       end
 
       def apply(query)
         case association
-        when "self", query.table_name
+        when query.table_name
           return apply_components(query)
         else
           association_query = query.reflect_on_association(association).klass.unscoped
           association_query = apply_components(association_query)
           set(query: query, association_query: association_query)
-          apply_association_query
+          query.to_seek_query.merge(apply_association_query)
         end
       end
 

@@ -9,13 +9,7 @@ module ActiveRecordSeek
       end
 
       def apply(query)
-        query.seek_or(self) do |this|
-          this.components.namespaces.each do |namespace|
-            add_query do |unscoped|
-              namespace.apply(unscoped)
-            end
-          end
-        end
+        components.apply(query)
       end
 
       module ActiveRecordScopeConcern

@@ -14,15 +14,16 @@ module ActiveRecordSeek
         context = Context.new(query.klass)
         context.instance_exec(*context_arguments, &context_block)
         # combine queries into single OR clause
-        query.where(context.queries.map(&:to_where_sql).join(" OR "))
+        query.where(context.to_where_sql)
       end
 
       class Context
-        attr_accessor(*%w[ klass queries ])
+        attr_accessor(*%w[ klass queries enclose_with_parentheses ])
 
         def initialize(klass)
           self.klass   = klass
           self.queries = []
+          self.enclose_with_parentheses = false
         end
 
         def add_query(&block)
@@ -30,6 +31,12 @@ module ActiveRecordSeek
           query = unscoped_query.instance_exec(unscoped_query, &block).to_seek_query
           queries.push(query) if query.has_where_sql?
           self
+        end
+
+        def to_where_sql
+          queries.map do |query|
+            query.to_where_sql(enclose_with_parentheses: enclose_with_parentheses)
+          end.join(" OR ")
         end
       end
 

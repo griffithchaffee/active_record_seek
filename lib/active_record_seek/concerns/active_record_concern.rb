@@ -12,7 +12,7 @@ module ActiveRecordSeek
 
       class_methods do
         def to_seek_query
-          ::ActiveRecordSeek::Query.new(query: all)
+          ::ActiveRecordSeek::Query.new(active_record_query: all)
         end
       end
 

@@ -5,18 +5,7 @@ module ActiveRecordSeek
       extend ActiveSupport::Concern
 
       def initialize(variables = {})
-        #puts "#{self.class}.new"
-        before_initialize
         set(variables)
-        after_initialize
-      end
-
-      def before_initialize
-        self
-      end
-
-      def after_initialize
-        self
       end
 
       def set(params = {})

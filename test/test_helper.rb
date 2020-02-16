@@ -15,3 +15,13 @@ require "lib/memory_database_schema"
 require "lib/memory_database_models"
 require "lib/memory_database_factories"
 require "lib/test_superclasses"
+
+puts ""
+puts Group.seek(
+  "a.members.id.eq" => 1,
+  "a.members.name.eq" => "2",
+  "b.members.id.eq" => 3,
+  "b.members.name.eq" => "4",
+  "unscoped.members.id.eq" => 5,
+  "unscoped.members.name.eq" => "6",
+).where(id: 1).to_sql
