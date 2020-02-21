@@ -1,9 +1,3 @@
-=begin
-Student.seek_or(self) do |this|
-  add_scope { where(...) }
-  add_scope { where(...).where(...) }
-end
-=end
 module ActiveRecordSeek
   module Scopes
     class SeekOrScope < BaseScope
@@ -14,7 +8,7 @@ module ActiveRecordSeek
         context = Context.new(query.klass)
         context.instance_exec(*context_arguments, &context_block)
         # combine queries into single OR clause
-        query.where(context.to_where_sql)
+        context.apply(query)
       end
 
       class Context
@@ -32,10 +26,11 @@ module ActiveRecordSeek
           self
         end
 
-        def to_where_sql
-          queries.map do |query|
-            query.to_where_sql
+        def apply(query)
+          queries_sql = queries.map do |context_query|
+            context_query.to_where_sql(enclose_with_parentheses: queries.size > 1)
           end.join(" OR ")
+          query.where(queries_sql)
         end
       end
 

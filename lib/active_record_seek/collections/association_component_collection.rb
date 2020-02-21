@@ -84,20 +84,25 @@ Group.where(id => MemberGroup.select(:group_id))
         @jumps
       end
 
-      def apply_components(components_query)
-        case namespace
-        when "unscoped"
-          components_query = components_query.seek_or(self) do |this|
-            this.components.each do |component|
-              add_query { component.apply(self) }
+      def apply_components(query)
+        query = query.seek_or(self) do |this|
+          this.components.group_by(&:namespace).each do |namespace, namespace_components|
+            case namespace
+            when "unscoped"
+              namespace_components.each do |component|
+                add_query { component.apply(self) }
+              end
+            else
+              add_query do |namespace_query|
+                namespace_components.each do |component|
+                  namespace_query = component.apply(namespace_query)
+                end
+                namespace_query
+              end
             end
           end
-        else
-          components.each do |component|
-            components_query = component.apply(components_query)
-          end
         end
-        components_query
+        query
       end
 
       def apply(query)
@@ -108,7 +113,7 @@ Group.where(id => MemberGroup.select(:group_id))
           association_query = query.reflect_on_association(association).klass.unscoped
           association_query = apply_components(association_query)
           set(query: query, association_query: association_query)
-          query.to_seek_query.merge(apply_association_query)
+          query.where(apply_association_query.to_seek_query.to_where_sql(enclose_with_parentheses: false))
         end
       end
 

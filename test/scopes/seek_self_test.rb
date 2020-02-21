@@ -25,7 +25,6 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
     # assertions
     seek_hashes.each do |seek_hash|
       query = Group.seek(seek_hash)
-      puts query.to_sql
       assert_equal_sql(
         %Q{SELECT "groups".* FROM "groups" WHERE ("groups"."name" = '#{group1.name}')},
         query.to_sql,

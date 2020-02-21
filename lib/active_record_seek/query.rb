@@ -31,7 +31,7 @@ module ActiveRecordSeek
       arel_table[column_name]
     end
 
-    def to_where_sql(enclose_with_parentheses: false)
+    def to_where_sql(enclose_with_parentheses: true)
       if !instance_variable_defined?(:@where_sql)
         @where_sql = active_record_query.reorder(nil).to_sql.split(" WHERE ", 2)[1].to_s.strip
       end
@@ -44,7 +44,7 @@ module ActiveRecordSeek
     end
 
     def merge(other_query)
-      active_record_query.where(other_query.to_seek_query.to_where_sql)
+      active_record_query.where(other_query.to_seek_query.to_where_sql(enclose_with_parentheses: false))
     end
 
   end

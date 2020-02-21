@@ -29,12 +29,8 @@ module ActiveRecordSeek
       "::ActiveRecordSeek::Operators::#{operator.camelcase}Operator".constantize
     end
 
-    def predicate
-      Predicate.new(component: self)
-    end
-
     def apply(query)
-      predicate.apply(query)
+      operator_class.new(component: self).apply(query)
     end
 
   end
