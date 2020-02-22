@@ -4,6 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "active_record_seek/version"
 
 Gem::Specification.new do |spec|
+
   spec.name          = "active_record_seek"
   spec.version       = ActiveRecordSeek::VERSION
   spec.authors       = ["Griffith Chaffee"]
@@ -35,5 +36,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency("factory_bot",  "~> 5")
   spec.add_development_dependency("byebug",       "~> 11")
 
-  #spec.add_development_dependency("appraisal")
 end

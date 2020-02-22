@@ -2,103 +2,52 @@ require "test_helper"
 
 class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
 
-  # case sensitive tests
-  def test_operator_eq
+  def test_operator_gt
     assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE ("groups"."name" = 'test1')},
-      Group.seek("name.eq" => "test1").to_sql,
-      "eq"
+      %Q{SELECT "groups".* FROM "groups" WHERE ("groups"."id" > 1)},
+      Group.seek("id.gt" => 1).to_sql,
+      "gt"
     )
   end
 
-  def test_operator_eq_all
+  def test_operator_gt_all
     assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."name" = 'test1' AND "groups"."name" = 'test2'))},
-      Group.seek("name.eq_all" => %w[ test1 test2 ]).to_sql,
-      "eq_all"
+      %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."id" > 1 AND "groups"."id" > 2))},
+      Group.seek("id.gt_all" => [1, 2]).to_sql,
+      "gt_all"
     )
   end
 
-  def test_operator_eq_any
+  def test_operator_gt_any
     assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."name" = 'test1' OR "groups"."name" = 'test2'))},
-      Group.seek("name.eq_any" => %w[ test1 test2 ]).to_sql,
-      "eq_any"
+      %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."id" > 1 OR "groups"."id" > 2))},
+      Group.seek("id.gt_any" => [1, 2]).to_sql,
+      "gt_any"
     )
   end
 
-  def test_operator_not_eq
+  def test_operator_gteq
     assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE ("groups"."name" != 'test1')},
-      Group.seek("name.not_eq" => "test1").to_sql,
-      "not_eq"
+      %Q{SELECT "groups".* FROM "groups" WHERE ("groups"."id" >= 1)},
+      Group.seek("id.gteq" => 1).to_sql,
+      "gteq"
     )
   end
 
-  def test_operator_not_eq_all
+  def test_operator_gteq_all
     assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."name" != 'test1' AND "groups"."name" != 'test2'))},
-      Group.seek("name.not_eq_all" => %w[ test1 test2 ]).to_sql,
-      "not_eq_all"
+      %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."id" >= 1 AND "groups"."id" >= 2))},
+      Group.seek("id.gteq_all" => [1, 2]).to_sql,
+      "gteq_all"
     )
   end
 
-  def test_operator_not_eq_any
+  def test_operator_gteq_any
     assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."name" != 'test1' OR "groups"."name" != 'test2'))},
-      Group.seek("name.not_eq_any" => %w[ test1 test2 ]).to_sql,
-      "not_eq_any"
-    )
-  end
-
-  # case insensitive tests
-  def test_operator_ci_eq
-    assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE (LOWER("groups"."name") = LOWER('test1'))},
-      Group.seek("name.ci_eq" => "test1").to_sql,
-      "ci_eq"
-    )
-  end
-
-  def test_operator_ci_eq_all
-    assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE ((LOWER("groups"."name") = LOWER('test1') AND LOWER("groups"."name") = LOWER('test2')))},
-      Group.seek("name.ci_eq_all" => %w[ test1 test2 ]).to_sql,
-      "ci_eq_all"
-    )
-  end
-
-  def test_operator_ci_eq_any
-    assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE ((LOWER("groups"."name") = LOWER('test1') OR LOWER("groups"."name") = LOWER('test2')))},
-      Group.seek("name.ci_eq_any" => %w[ test1 test2 ]).to_sql,
-      "ci_eq_any"
-    )
-  end
-
-  def test_operator_not_ci_eq
-    assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE (LOWER("groups"."name") != LOWER('test1'))},
-      Group.seek("name.not_ci_eq" => "test1").to_sql,
-      "not_ci_eq"
-    )
-  end
-
-  def test_operator_not_ci_eq_all
-    assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE ((LOWER("groups"."name") != LOWER('test1') AND LOWER("groups"."name") != LOWER('test2')))},
-      Group.seek("name.not_ci_eq_all" => %w[ test1 test2 ]).to_sql,
-      "not_ci_eq_all"
-    )
-  end
-
-  def test_operator_not_ci_eq_any
-    assert_equal_sql(
-      %Q{SELECT "groups".* FROM "groups" WHERE ((LOWER("groups"."name") != LOWER('test1') OR LOWER("groups"."name") != LOWER('test2')))},
-      Group.seek("name.not_ci_eq_any" => %w[ test1 test2 ]).to_sql,
-      "not_ci_eq_any"
+      %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."id" >= 1 OR "groups"."id" >= 2))},
+      Group.seek("id.gteq_any" => [1, 2]).to_sql,
+      "gteq_any"
     )
   end
 
 end
-
