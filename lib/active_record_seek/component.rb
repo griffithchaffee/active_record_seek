@@ -3,8 +3,8 @@ module ActiveRecordSeek
 
     include Concerns::InstanceVariableConcern
 
-    attr_accessor(*%w[ value query_association ])
-    attr_reader(*%w[ key namespace association column operator query_association ])
+    attr_accessor(*%w[ value query_association model adapter_name ])
+    attr_reader(*%w[ key namespace association column operator ])
 
     def key=(new_key)
       @key = new_key.to_s
@@ -18,6 +18,8 @@ module ActiveRecordSeek
 
     def query=(new_query)
       # convert association for query
+      self.model        = new_query.klass
+      self.adapter_name = model.connection.adapter_name
       self.query_association =
         case association
         when "self" then new_query.table_name

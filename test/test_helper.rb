@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(File.expand_path("../../lib", __FILE__))
+#$LOAD_PATH.unshift(File.expand_path("../../lib", __FILE__))
 require "active_record_seek"
 
 require "minitest/autorun"
@@ -10,12 +10,20 @@ I18n.enforce_available_locales = false
 ActiveRecord::Migration.verbose = false
 
 # lib
-require "lib/memory_database"
-require "lib/memory_database_schema"
-require "lib/memory_database_models"
-require "lib/memory_database_factories"
-require "lib/test_superclasses"
+require "bundler"
+require "lib/test_env"
+require "lib/adapter_database"
+require "lib/adapter_database_schema"
 
+AdapterDatabase.instance.recreate_database!
+AdapterDatabase.instance.connect!
+AdapterDatabase.instance.write_schema!
+puts "DatabaseAdapter: #{AdapterDatabase.instance.adapter_name}"
+
+require "lib/adapter_database_models"
+require "lib/adapter_database_factories"
+require "lib/test_superclasses"
+=begin
 puts ""
 puts Group.seek(
   "a.members.id.eq"   => 1,
@@ -26,7 +34,6 @@ puts Group.seek(
   "unscoped.members.name.eq" => "6",
   "member_groups.id.eq" => 7,
 ).to_sql
-
 #byebug
 #a = 1
-
+=end

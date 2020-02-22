@@ -1,6 +1,6 @@
 module ActiveRecordSeek
   module Operators
-    class NotEqOperator < BaseOperator
+    class NotInOperator < BaseOperator
 
     end
   end

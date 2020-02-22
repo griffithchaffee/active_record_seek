@@ -1,4 +1,4 @@
-MemoryDatabase.instance.define_schema! do
+AdapterDatabase.instance.define_schema do
   create_table :members do |t|
     t.string :name
   end

@@ -1,0 +1,17 @@
+mysql:
+  adapter:  mysql2
+  host:     localhost
+  username: test
+  password: test
+  database: active_record_seek_test
+
+postgresql:
+  adapter:  postgresql
+  host:     localhost
+  username: test
+  password: test
+  database: active_record_seek_test
+
+sqlite:
+  adapter:  sqlite3
+  database: ":memory:"

@@ -1,9 +1,9 @@
 module ActiveRecordSeek
   module Operators
-    class IeqOperator < BaseOperator
+    class InOperator < BaseOperator
 
       def arel_operation
-        arel_column.lower.eq(arel_table.lower(arel_value))
+        arel_column.send(component.operator, arel_value)
       end
 
     end

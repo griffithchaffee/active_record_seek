@@ -29,5 +29,35 @@ module ActiveRecordSeek
       end
 
     end
+
+    %w[
+      eq
+      eq_all
+      eq_any
+      gt
+      gt_all
+      gt_any
+      gteq
+      gteq_all
+      gteq_any
+      in
+      in_all
+      in_any
+      lt
+      lt_all
+      lt_any
+      lteq
+      lteq_all
+      lteq_any
+      not_eq
+      not_eq_all
+      not_eq_any
+      not_in
+      not_in_all
+      not_in_any
+    ].each do |operator|
+      const_set("#{operator.camelcase}Operator", Class.new(BaseOperator))
+    end
   end
 end
+

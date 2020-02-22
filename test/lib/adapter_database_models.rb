@@ -25,5 +25,3 @@ class GroupProperty < ActiveRecord::Base
   has_many :members, through: :group
   has_one  :category, through: :group
 end
-
-puts Group.where(id: 0).to_sql

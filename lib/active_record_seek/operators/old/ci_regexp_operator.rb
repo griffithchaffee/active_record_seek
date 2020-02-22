@@ -1,9 +1,9 @@
 module ActiveRecordSeek
   module Operators
-    class IlikeOperator < BaseOperator
+    class CiRegexpOperator < BaseOperator
 
       def arel_operation
-        operation = arel_column.matches(arel_value)
+        operation = arel_column.matches_regexp(arel_value)
         operation.case_sensitive = false
         operation
       end

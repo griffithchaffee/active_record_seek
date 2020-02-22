@@ -6,7 +6,7 @@ module ActiveRecordSeekTest
 
   class QueryTest < BaseTest
     def setup
-      MemoryDatabase.instance.reset!
+      AdapterDatabase.instance.drop_data!
     end
 
     def assert_equal_groups(expected_groups, actual_groups, *params)
@@ -17,9 +17,14 @@ module ActiveRecordSeekTest
       )
     end
 
-    def assert_equal_sql(expected_sql, actual_sql, *params)
+    def assert_equal_sql(multiline_expected_sql, actual_sql, *params)
+      expected_sql = multiline_expected_sql.lines.map(&:strip).join
+      # convert from " to ` for MySQL
+      if AdapterDatabase.instance.adapter_namespace == "mysql"
+        expected_sql.gsub!('"', "`")
+      end
       assert_equal(
-        expected_sql.lines.map(&:strip).join,
+        expected_sql,
         actual_sql,
         *params
       )
