@@ -18,8 +18,8 @@ module ActiveRecordSeek
 
     def query=(new_query)
       # convert association for query
-      self.model        = new_query.klass
-      self.adapter_name = model.connection.adapter_name
+      self.model        = new_query.model
+      self.adapter_name = new_query.adapter_name
       self.query_association =
         case association
         when "self" then new_query.table_name

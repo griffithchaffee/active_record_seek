@@ -9,7 +9,7 @@ module ActiveRecordSeek
       end
 
       def apply(query)
-        components.apply(query)
+        components.apply(query.to_seek_query)
       end
 
       module ActiveRecordScopeConcern
@@ -19,7 +19,7 @@ module ActiveRecordSeek
         class_methods do
           def seek(components_hash = {}, &block)
             raise(ArgumentError, "#{self.class}#seek does not accept a block") if block
-            SeekScope.new(components_hash: components_hash).apply(all)
+            SeekScope.new(components_hash: components_hash).apply(all).to_active_record_query
           end
         end
 

@@ -27,13 +27,13 @@ module ActiveRecordSeek
             query = association.apply(query)
           end
         else
-          query = query.seek_or(self) do |this|
+          query = query.to_active_record_query.seek_or(self) do |this|
             this.associations_for_query(query).each do |association|
-              add_query { association.apply(self) }
+              add_query { association.apply(to_seek_query) }
             end
           end
         end
-        query
+        query.to_seek_query
       end
 
     end
