@@ -9,10 +9,10 @@ module ActiveRecordSeekTest
       AdapterDatabase.instance.drop_data!
     end
 
-    def assert_equal_groups(expected_groups, actual_groups, *params)
+    def assert_equal_records(expected_records, actual_records, *params)
       assert_equal(
-        expected_groups.map(&:id),
-        actual_groups.map(&:id),
+        expected_records.to_a,
+        actual_records.to_a,
         *params
       )
     end

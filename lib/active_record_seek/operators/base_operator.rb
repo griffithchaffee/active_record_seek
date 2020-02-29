@@ -31,6 +31,7 @@ module ActiveRecordSeek
     end
 
     %w[
+      between
       eq
       eq_all
       eq_any
@@ -49,6 +50,7 @@ module ActiveRecordSeek
       lteq
       lteq_all
       lteq_any
+      not_between
       not_eq
       not_eq_all
       not_eq_any

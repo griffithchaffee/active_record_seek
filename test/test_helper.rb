@@ -23,6 +23,7 @@ puts "DatabaseAdapter: #{AdapterDatabase.instance.adapter_name}"
 require "lib/adapter_database_models"
 require "lib/adapter_database_factories"
 require "lib/test_superclasses"
+
 =begin
 puts ""
 puts Group.seek(
@@ -34,6 +35,5 @@ puts Group.seek(
   "unscoped.members.name.eq" => "6",
   "member_groups.id.eq" => 7,
 ).to_sql
-#byebug
 #a = 1
 =end

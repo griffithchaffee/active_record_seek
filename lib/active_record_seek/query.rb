@@ -44,7 +44,7 @@ module ActiveRecordSeek
     end
 
     def merge(other_query)
-      active_record_query.where(other_query.to_seek_query.to_where_sql(enclose_with_parentheses: false))
+      active_record_query.where(other_query.to_seek_query.to_where_sql(enclose_with_parentheses: false)).to_seek_query
     end
 
   end

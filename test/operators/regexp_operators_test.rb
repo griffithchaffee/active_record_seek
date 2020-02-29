@@ -20,7 +20,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
   def test_operator_regexp_all
     if AdapterDatabase.instance.adapter_name.in?(%w[ SQLite Mysql2 ])
       assert_raises(NotImplementedError) do
-        Group.seek("name.regexp_all" => "test1").to_sql
+        Group.seek("name.regexp_all" => ["test1", "test2"]).to_sql
       end
     else
       assert_equal_sql(
@@ -34,7 +34,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
   def test_operator_regexp_any
     if AdapterDatabase.instance.adapter_name.in?(%w[ SQLite Mysql2 ])
       assert_raises(NotImplementedError) do
-        Group.seek("name.regexp_any" => "test1").to_sql
+        Group.seek("name.regexp_any" => ["test1", "test2"]).to_sql
       end
     else
       assert_equal_sql(
@@ -62,7 +62,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
   def test_operator_not_regexp_all
     if AdapterDatabase.instance.adapter_name.in?(%w[ SQLite Mysql2 ])
       assert_raises(NotImplementedError) do
-        Group.seek("name.not_regexp_all" => "test1").to_sql
+        Group.seek("name.not_regexp_all" => ["test1", "test2"]).to_sql
       end
     else
       assert_equal_sql(
@@ -76,7 +76,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
   def test_operator_not_regexp_any
     if AdapterDatabase.instance.adapter_name.in?(%w[ SQLite Mysql2 ])
       assert_raises(NotImplementedError) do
-        Group.seek("name.not_regexp_any" => "test1").to_sql
+        Group.seek("name.not_regexp_any" => ["test1", "test2"]).to_sql
       end
     else
       assert_equal_sql(
@@ -105,7 +105,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
   def test_operator_ci_regexp_all
     if AdapterDatabase.instance.adapter_name.in?(%w[ SQLite Mysql2 ])
       assert_raises(NotImplementedError) do
-        Group.seek("name.ci_regexp_all" => "test1").to_sql
+        Group.seek("name.ci_regexp_all" => ["test1", "test2"]).to_sql
       end
     else
       assert_equal_sql(
@@ -119,7 +119,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
   def test_operator_ci_regexp_any
     if AdapterDatabase.instance.adapter_name.in?(%w[ SQLite Mysql2 ])
       assert_raises(NotImplementedError) do
-        Group.seek("name.ci_regexp_any" => "test1").to_sql
+        Group.seek("name.ci_regexp_any" => ["test1", "test2"]).to_sql
       end
     else
       assert_equal_sql(
@@ -147,7 +147,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
   def test_operator_not_ci_regexp_all
     if AdapterDatabase.instance.adapter_name.in?(%w[ SQLite Mysql2 ])
       assert_raises(NotImplementedError) do
-        Group.seek("name.not_ci_regexp_all" => "test1").to_sql
+        Group.seek("name.not_ci_regexp_all" => ["test1", "test2"]).to_sql
       end
     else
       assert_equal_sql(
@@ -161,7 +161,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
   def test_operator_not_ci_regexp_any
     if AdapterDatabase.instance.adapter_name.in?(%w[ SQLite Mysql2 ])
       assert_raises(NotImplementedError) do
-        Group.seek("name.not_ci_regexp_any" => "test1").to_sql
+        Group.seek("name.not_ci_regexp_any" => ["test1", "test2"]).to_sql
       end
     else
       assert_equal_sql(

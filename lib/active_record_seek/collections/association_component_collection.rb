@@ -8,24 +8,7 @@ module ActiveRecordSeek
         $debug ||= false
         puts(message) if $debug
       end
-=begin
-Member => Group
-jump through MemberGroup.member
-jump base Group.member_groups
-MemberGroup.where_member_id(in: Member.select_id)
-Group.where_id(in: MemberGroup.select_group_id)
-SELECT "groups".* FROM "groups" WHERE (("groups"."id" IN (SELECT "member_groups"."group_id" FROM "member_groups" WHERE ("member_groups"."member_id" IN (SELECT "members"."id" FROM "members" WHERE ("members"."id" = 1))))))
 
-Member => Group
-jump through MemberGroup.member
-jump base Group.member_groups
-MemberGroup.where(member_id => Member.select(:id))
-Group.where(id => MemberGroup.select(:group_id))
-=end
-      # merge association subquery into current query
-      # acheived by building association jumps between association_query and current query
-      # example: Member.merge_asssociation_query(:groups, Group.where_name(matches: "golf"))
-      # example debug:
       # Group => Member
       # jump through MemberGroup.group
       # jump base Member.member_groups
@@ -47,13 +30,13 @@ Group.where(id => MemberGroup.select(:group_id))
       end
 
       def jumps(jump_query)
-        instance_variable_yield(:@jumps) { |value| return value }
-        @jumps = []
+        jumps = []
         add_jump = -> (klass, association) do
           assoc_h = { model: klass, association: association }
           assoc_struct = Struct.new(*assoc_h.keys.map(&:to_sym)).new(*assoc_h.values)
-          @jumps.push(assoc_struct)
+          jumps.push(assoc_struct)
         end
+        # recursive jump builder
         jump_builder = -> (ref) do
           # used to protect against infinite loop
           association = ref.source_reflection.name
@@ -81,7 +64,7 @@ Group.where(id => MemberGroup.select(:group_id))
           end
         end
         jump_builder.call(query.reflect_on_association(association))
-        @jumps
+        jumps
       end
 
       def apply_components(query)
@@ -110,7 +93,14 @@ Group.where(id => MemberGroup.select(:group_id))
         when query.table_name
           return apply_components(query)
         else
-          association_query = query.reflect_on_association(association).klass.unscoped
+          reflection = query.reflect_on_association(association)
+          if !reflection
+            raise(
+              ArgumentError,
+              "#{query.klass} does not have an association with the name: #{association.inspect}"
+            )
+          end
+          association_query = reflection.klass.unscoped
           association_query = apply_components(association_query)
           set(query: query, association_query: association_query)
           query.where(apply_association_query.to_seek_query.to_where_sql(enclose_with_parentheses: false))

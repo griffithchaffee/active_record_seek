@@ -2,10 +2,10 @@ require "test_helper"
 
 class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
 
-  def test_seek_eq
+  def test_seek_self
     # records
     group1 = FactoryBot.create(:group, name: "group1")
-    3.times { FactoryBot.create(:group, name: "group#{Group.count + 1}") }
+    FactoryBot.create(:group, name: "group2")
     # variables
     seek_hashes  = []
     associations = %w[ groups self ]
@@ -30,7 +30,7 @@ class ActiveRecordSeekTest::SeekTest < ActiveRecordSeekTest::QueryTest
         query.to_sql,
         "seek(#{seek_hash})"
       )
-      assert_equal_groups([group1], query)
+      assert_equal_records([group1], query)
     end
   end
 

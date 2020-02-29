@@ -8,7 +8,7 @@ module ActiveRecordSeek
 
     def key=(new_key)
       @key = new_key.to_s
-      parts = @key.split(".")
+      parts = @key.split(".").select(&:present?)
       @operator    = parts.pop
       @column      = parts.pop
       @association = parts.pop || "self"
