@@ -5,9 +5,8 @@ module ActiveRecordSeek
       extend ActiveSupport::Concern
 
       included do
-        ::ActiveRecordSeek::Scopes::BaseScope.subclasses.each do |subclass|
-          include subclass::ActiveRecordScopeConcern
-        end
+        include ActiveRecordSeek::Scopes::SeekScope::ActiveRecordScopeConcern
+        include ActiveRecordSeek::Scopes::SeekOrScope::ActiveRecordScopeConcern
       end
 
       class_methods do

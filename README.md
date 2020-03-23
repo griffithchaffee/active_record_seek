@@ -1,8 +1,12 @@
 # ActiveRecord::Seek
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/active_record/seek`. To experiment with that code, run `bin/console` for an interactive prompt.
+## TESTS
 
-TODO: Delete this and the text above, and describe your gem
+```
+rake test:mysql
+rake test:postgresql
+rake test:sqlite
+```
 
 ## Installation
 

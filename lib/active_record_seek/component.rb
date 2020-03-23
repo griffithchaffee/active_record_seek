@@ -3,28 +3,34 @@ module ActiveRecordSeek
 
     include Concerns::InstanceVariableConcern
 
-    attr_accessor(*%w[ value query_association model adapter_name ])
-    attr_reader(*%w[ key namespace association column operator ])
+    attr_accessor(*%w[
+      base_query
+      value
+      operator
+      column
+      namespace
+    ])
+    attr_reader(*%w[ key association ])
+    delegate(*%w[ active_record_query seek_query ], to: :base_query)
+    delegate(*%w[ table_name adapter_name ], to: :seek_query)
+
 
     def key=(new_key)
       @key = new_key.to_s
       parts = @key.split(".").select(&:present?)
-      @operator    = parts.pop
-      @column      = parts.pop
-      @association = parts.pop || "self"
-      @namespace   = parts.pop || "default"
+      self.operator    = parts.pop
+      self.column      = parts.pop
+      self.association = parts.pop || "self"
+      self.namespace   = parts.pop || "default"
       @key
     end
 
-    def query=(new_query)
-      # convert association for query
-      self.model        = new_query.model
-      self.adapter_name = new_query.adapter_name
-      self.query_association =
-        case association
-        when "self" then new_query.table_name
-        else association
-        end
+    def association=(new_association)
+      @association = new_association == "self" ? table_name : new_association
+    end
+
+    def is_base_query_component?
+      association == table_name
     end
 
     def operator_class

@@ -6,6 +6,11 @@ module ActiveRecordSeek
 
       def initialize(variables = {})
         set(variables)
+        after_initialize
+      end
+
+      def after_initialize
+        # noop
       end
 
       def set(params = {})

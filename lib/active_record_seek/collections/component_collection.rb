@@ -2,11 +2,12 @@ module ActiveRecordSeek
   module Collections
     class ComponentCollection < BaseCollection
 
+      attr_accessor(*%w[ base_query ])
       attr_reader(*%w[ components ])
 
       def components_hash=(new_components_hash)
         @components = new_components_hash.map do |key, value|
-          Component.new(key: key, value: value)
+          Component.new(base_query: base_query, key: key, value: value)
         end
       end
 

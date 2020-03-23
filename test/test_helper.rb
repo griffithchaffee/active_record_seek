@@ -25,8 +25,7 @@ require "lib/adapter_database_factories"
 require "lib/test_superclasses"
 
 #=begin
-puts ""
-puts Group.seek(
+query = Group.seek(
   "a.members.id.eq"   => 1,
   "a.members.name.eq" => "2",
   "b.members.id.eq"   => 3,
@@ -34,7 +33,16 @@ puts Group.seek(
   "unscoped.members.id.eq"   => 5,
   "unscoped.members.name.eq" => "6",
   "member_groups.id.eq" => 7,
-).to_sql
+)
+expected_sql = %Q{SELECT "groups".* FROM "groups" WHERE (("groups"."id" IN (SELECT "member_groups"."group_id" FROM "member_groups" WHERE "member_groups"."member_id" IN (SELECT "members"."id" FROM "members" WHERE (("members"."id" = 1 AND "members"."name" = '2') OR ("members"."id" = 3 AND "members"."name" = '4') OR ("members"."id" = 5) OR ("members"."name" = '6'))))) OR ("groups"."id" IN (SELECT "member_groups"."group_id" FROM "member_groups" WHERE ("member_groups"."id" = 7))))}
 #=end
-#byebug
-#a = 1
+if AdapterDatabase.instance.adapter_name != "Mysql2" && query.to_sql != expected_sql
+  puts ""
+  puts "ERROR - example query does not match expected SQL"
+  puts ""
+  puts "EXPECT: #{expected_sql}"
+  puts ""
+  puts "ACTUAL: #{query.to_sql}"
+  puts ""
+  byebug
+end
