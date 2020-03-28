@@ -7,12 +7,7 @@ require "active_record_seek/concerns/instance_variable_concern"
 # core
 require "active_record_seek/query"
 require "active_record_seek/component"
-#require "active_record_seek/predicate"
-# collections
-#require "active_record_seek/collections/base_collection"
-#require "active_record_seek/collections/component_collection"
-#require "active_record_seek/collections/namespace_component_collection"
-#require "active_record_seek/collections/association_component_collection"
+require "active_record_seek/middleware"
 # operators
 require "active_record_seek/operators/base_operator"
 require "active_record_seek/operators/matches_base_operator"
