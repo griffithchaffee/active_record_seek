@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Griffith Chaffee"]
   spec.email         = ["griffithchaffee@gmail.com"]
 
-  spec.summary       = %q{Generates useful active record query scopes.}
-  spec.description   = %q{Generates useful active record scopes for attributes using Arel.}
+  spec.summary       = %q{Build complex ActiveRecord queries using hash syntax.}
+  spec.description   = %q{Build complex ActiveRecord queries using hash syntax. Includes support for Arel operators, OR queries, and assocition subqueries.}
   spec.homepage      = "https://github.com/griffithchaffee/active_record_seek"
   spec.license       = "MIT"
 
