@@ -1,0 +1,84 @@
+name: Ruby on Rails
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # https://help.github.com/en/actions/configuring-and-managing-workflows/creating-postgresql-service-containers
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      # How to use MySQL
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+        - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    # https://help.github.com/en/articles/workflow-syntax-for-github-actions#jobsjob_idstrategymatrix
+    strategy:
+      matrix:
+        rails_version: [5.0.0, 5.2.3, 6.0.0, master]
+        ruby_version: [2.4.x, 2.5.x, 2.6.x, 2.7.x]
+        exclude:
+          - rails_version: master
+            ruby_version: 2.4.x
+          - rails_version: 6.0.0
+            ruby_version: 2.4.x
+    steps:
+    - uses: actions/checkout@master
+    - name: Setup Ruby
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby_version }}
+    - name: Update rubygems when testing with Ruby 2.4.x
+      if: startsWith(matrix.ruby_version, '2.4')
+      run: |
+        gem update --system --no-document
+    - name: Install bundler (1.17)
+      if: startsWith(matrix.ruby_version, '2.4') == true
+      run: |
+        gem install bundler:1.17.3
+        bundle update
+        bundle config path vendor/bundle
+    - name: Install bundler (2)
+      if: startsWith(matrix.ruby_version, '2.4') != true
+      run: |
+        gem install bundler:2.1.4
+        bundle config path vendor/bundle
+    - name: Cache gems
+      uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-gems-
+    - name: Install gems
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: bundle install --jobs 4 --retry 3
+    # https://docs.knapsackpro.com/2019/github-actions-ci-config-for-ruby-on-rails-project-with-mysql-redis-elasticsearch-how-to-run-parallel-tests
+    - name: Verify MySQL connection from host
+      run: |
+        sudo apt-get install -y mysql-client libmysqlclient-dev
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports[3306] }} -uroot -proot -e "SHOW GRANTS FOR 'root'@'localhost'"
+        mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports[3306] }} -uroot -proot mysql
+    - name: Build and test with Rake
+      run: |
+        bundle exec rake test
+      env:
+        RAILS_VERSION: ${{ matrix.rails_version }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -6,3 +6,6 @@ end
 
 # Specify your gem's dependencies in active_record_seek.gemspec
 gemspec
+
+gem "rake", "~> 12.0"
+gem "minitest", "~> 5.0"
