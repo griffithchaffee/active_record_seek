@@ -8,5 +8,6 @@
 /tmp/
 
 *.swp
+*.gem
 /.byebug_history
 test/lib/adapter_database.yml

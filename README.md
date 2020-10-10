@@ -41,4 +41,10 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/chaffe
 
 ## Code of Conduct
 
-Everyone interacting in the ActiveRecordSeek project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/chaffeqa/active_record_seek/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the ActiveRecord::Seek project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/active_record_seek/blob/master/CODE_OF_CONDUCT.md).
+
+## Publish Gem
+
+```bash
+gem build
+```
