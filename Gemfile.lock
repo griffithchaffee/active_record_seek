@@ -6,36 +6,33 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (5.2.3)
-      activesupport (= 5.2.3)
-    activerecord (5.2.3)
-      activemodel (= 5.2.3)
-      activesupport (= 5.2.3)
-      arel (>= 9.0)
-    activesupport (5.2.3)
+    activemodel (7.0.3.1)
+      activesupport (= 7.0.3.1)
+    activerecord (7.0.3.1)
+      activemodel (= 7.0.3.1)
+      activesupport (= 7.0.3.1)
+    activesupport (7.0.3.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
-      i18n (>= 0.7, < 2)
-      minitest (~> 5.1)
-      tzinfo (~> 1.1)
-    arel (9.0.0)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
     byebug (11.1.1)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.10)
     factory_bot (5.1.1)
       activesupport (>= 4.2.0)
-    i18n (1.6.0)
+    i18n (1.11.0)
       concurrent-ruby (~> 1.0)
-    minitest (5.11.3)
+    minitest (5.16.2)
     rake (12.3.2)
-    thread_safe (0.3.6)
-    tzinfo (1.2.5)
-      thread_safe (~> 0.1)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   active_record_seek!
-  activerecord (~> 5)
+  activerecord (~> 7)
   bundler (~> 2)
   byebug (~> 11)
   factory_bot (~> 5)
